@@ -1,0 +1,92 @@
+<%- include('../partials/header') %>
+
+<div class="page-container">
+  <div class="page-title">
+    <h1><i class="fas fa-shopping-cart"></i> My Cart</h1>
+  </div>
+
+  <% if (cartItems.length === 0) { %>
+    <div class="empty-state">
+      <i class="fas fa-shopping-cart"></i>
+      <h2>Your cart is empty</h2>
+      <p>Looks like you haven't added anything yet!</p>
+      <a href="/products" class="btn btn-primary">
+        <i class="fas fa-store"></i> Start Shopping
+      </a>
+    </div>
+  <% } else { %>
+    <div class="cart-layout">
+      <!-- Cart Items -->
+      <div class="cart-items">
+        <% cartItems.forEach(item => { %>
+          <div class="cart-item">
+            <img
+              src="<%= item.product.image %>"
+              alt="<%= item.product.name %>"
+              class="cart-item-img"
+              onerror="this.src='/images/default-product.png'"
+            />
+            <div class="cart-item-details">
+              <a href="/products/<%= item.product._id %>" class="cart-item-name"><%= item.product.name %></a>
+              <span class="cart-item-category"><%= item.product.category %></span>
+              <span class="cart-item-price-unit">Rs. <%= item.product.price.toLocaleString() %> each</span>
+            </div>
+            <div class="cart-item-controls">
+              <form action="/cart/update/<%= item.product._id %>" method="POST" class="qty-form">
+                <input
+                  type="number"
+                  name="quantity"
+                  value="<%= item.quantity %>"
+                  min="1"
+                  max="<%= item.product.stock %>"
+                  class="form-input qty-input-small"
+                  onchange="this.form.submit()"
+                />
+              </form>
+              <span class="cart-item-subtotal">Rs. <%= (item.product.price * item.quantity).toLocaleString() %></span>
+              <form action="/cart/remove/<%= item.product._id %>" method="POST">
+                <button type="submit" class="btn-icon btn-danger" title="Remove item">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+
+      <!-- Cart Summary -->
+      <div class="cart-summary">
+        <h3><i class="fas fa-receipt"></i> Order Summary</h3>
+        <div class="summary-row">
+          <span>Items (<%= cartItems.length %>)</span>
+          <span>Rs. <%= cartItems.reduce((s, i) => s + i.product.price * i.quantity, 0).toLocaleString() %></span>
+        </div>
+        <div class="summary-row">
+          <span>Shipping</span>
+          <span class="text-green">Free</span>
+        </div>
+        <div class="summary-total">
+          <span>Total</span>
+          <span>Rs. <%= cartTotal %></span>
+        </div>
+
+        <button class="btn btn-primary btn-full" onclick="alert('Checkout coming soon!')">
+          <i class="fas fa-credit-card"></i> Proceed to Checkout
+        </button>
+
+        <a href="/products" class="btn btn-outline btn-full" style="margin-top:0.5rem;">
+          <i class="fas fa-arrow-left"></i> Continue Shopping
+        </a>
+
+        <form action="/cart/clear" method="POST" style="margin-top:0.5rem;"
+          onsubmit="return confirm('Clear all items from cart?')">
+          <button type="submit" class="btn btn-danger btn-full">
+            <i class="fas fa-trash-alt"></i> Clear Cart
+          </button>
+        </form>
+      </div>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

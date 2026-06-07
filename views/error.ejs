@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+
+<div class="page-container">
+  <div class="empty-state">
+    <i class="fas fa-exclamation-triangle"></i>
+    <h2>Something went wrong</h2>
+    <p><%= error || 'An unexpected error occurred.' %></p>
+    <a href="/products" class="btn btn-primary">
+      <i class="fas fa-home"></i> Back to Shop
+    </a>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

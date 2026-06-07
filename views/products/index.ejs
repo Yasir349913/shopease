@@ -1,0 +1,112 @@
+<%- include('../partials/header') %>
+
+<div class="page-container">
+  <!-- Hero Banner -->
+  <div class="shop-hero">
+    <h1><i class="fas fa-store"></i> Our Products</h1>
+    <p>Discover amazing products at great prices</p>
+  </div>
+
+  <!-- Filters Bar -->
+  <div class="filters-bar">
+    <form action="/products" method="GET" class="filters-form">
+      <div class="filter-group">
+        <input
+          type="text"
+          name="search"
+          class="form-input search-input"
+          placeholder="Search products..."
+          value="<%= searchQuery %>"
+        />
+      </div>
+
+      <div class="filter-group">
+        <select name="category" class="form-input">
+          <% categories.forEach(cat => { %>
+            <option value="<%= cat %>" <%= currentCategory === cat ? 'selected' : '' %>><%= cat %></option>
+          <% }) %>
+        </select>
+      </div>
+
+      <div class="filter-group">
+        <select name="sort" class="form-input">
+          <option value="" <%= !currentSort ? 'selected' : '' %>>Sort: Newest</option>
+          <option value="name" <%= currentSort === 'name' ? 'selected' : '' %>>Sort: Name A-Z</option>
+          <option value="price-asc" <%= currentSort === 'price-asc' ? 'selected' : '' %>>Sort: Price ↑</option>
+          <option value="price-desc" <%= currentSort === 'price-desc' ? 'selected' : '' %>>Sort: Price ↓</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Filter</button>
+      <a href="/products" class="btn btn-outline">Clear</a>
+    </form>
+
+    <% if (currentUser && currentUser.role === 'admin') { %>
+      <a href="/products/new" class="btn btn-success">
+        <i class="fas fa-plus"></i> Add Product
+      </a>
+    <% } %>
+  </div>
+
+  <!-- Products Grid -->
+  <% if (products.length === 0) { %>
+    <div class="empty-state">
+      <i class="fas fa-box-open"></i>
+      <h2>No products found</h2>
+      <p>Try adjusting your search or filters.</p>
+      <a href="/products" class="btn btn-primary">View All Products</a>
+    </div>
+  <% } else { %>
+    <p class="results-count"><%= products.length %> product<%= products.length !== 1 ? 's' : '' %> found</p>
+    <div class="products-grid">
+      <% products.forEach(product => { %>
+        <div class="product-card">
+          <a href="/products/<%= product._id %>" class="product-img-link">
+            <img
+              src="<%= product.image %>"
+              alt="<%= product.name %>"
+              class="product-img"
+              onerror="this.src='/images/default-product.png'"
+            />
+            <span class="product-category"><%= product.category %></span>
+          </a>
+          <div class="product-info">
+            <h3 class="product-name">
+              <a href="/products/<%= product._id %>"><%= product.name %></a>
+            </h3>
+            <p class="product-desc"><%= product.description.substring(0, 80) %><%= product.description.length > 80 ? '...' : '' %></p>
+            <div class="product-footer">
+              <span class="product-price">Rs. <%= product.price.toLocaleString() %></span>
+              <span class="product-stock <%= product.stock === 0 ? 'out-of-stock' : '' %>">
+                <%= product.stock === 0 ? 'Out of Stock' : `${product.stock} in stock` %>
+              </span>
+            </div>
+            <div class="product-actions">
+              <a href="/products/<%= product._id %>" class="btn btn-outline btn-sm">View</a>
+              <% if (currentUser && product.stock > 0) { %>
+                <form action="/cart/add/<%= product._id %>" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-primary btn-sm">
+                    <i class="fas fa-cart-plus"></i> Add to Cart
+                  </button>
+                </form>
+              <% } %>
+              <% if (currentUser && currentUser.role === 'admin') { %>
+                <a href="/products/<%= product._id %>/edit" class="btn btn-warning btn-sm">
+                  <i class="fas fa-edit"></i>
+                </a>
+                <form action="/products/<%= product._id %>?_method=DELETE" method="POST" style="display:inline;"
+                  onsubmit="return confirm('Delete this product?')">
+                  <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </form>
+              <% } %>
+            </div>
+          </div>
+        </div>
+      <% }) %>
+    </div>
+  <% } %>
+</div>
+
+<%- include('../partials/footer') %>

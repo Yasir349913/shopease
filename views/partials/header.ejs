@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> — ShopEase</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="/products" class="nav-brand">
+        <i class="fas fa-shopping-bag"></i> ShopEase
+      </a>
+      <div class="nav-links">
+        <a href="/products" class="nav-link"><i class="fas fa-store"></i> Shop</a>
+
+        <% if (currentUser) { %>
+          <a href="/cart" class="nav-link cart-link">
+            <i class="fas fa-shopping-cart"></i> Cart
+          </a>
+          <% if (currentUser.role === 'admin') { %>
+            <a href="/products/new" class="nav-link"><i class="fas fa-plus"></i> Add Product</a>
+          <% } %>
+          <div class="nav-dropdown">
+            <button class="nav-link dropdown-toggle">
+              <i class="fas fa-user-circle"></i> <%= currentUser.name.split(' ')[0] %>
+            </button>
+            <div class="dropdown-menu">
+              <span class="dropdown-info"><%= currentUser.email %></span>
+              <span class="dropdown-badge <%= currentUser.role %>"><%= currentUser.role %></span>
+              <a href="/auth/logout" class="dropdown-item logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </div>
+          </div>
+        <% } else { %>
+          <a href="/auth/login" class="nav-link"><i class="fas fa-sign-in-alt"></i> Login</a>
+          <a href="/auth/register" class="btn btn-primary btn-sm">Sign Up</a>
+        <% } %>
+      </div>
+    </div>
+  </nav>
+
+  <!-- FLASH MESSAGES -->
+  <div class="flash-container">
+    <% if (messages && messages.success && messages.success.length > 0) { %>
+      <div class="flash flash-success">
+        <i class="fas fa-check-circle"></i> <%= messages.success[0] %>
+        <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+      </div>
+    <% } %>
+    <% if (messages && messages.error && messages.error.length > 0) { %>
+      <div class="flash flash-error">
+        <i class="fas fa-exclamation-circle"></i> <%= messages.error[0] %>
+        <button class="flash-close" onclick="this.parentElement.remove()">×</button>
+      </div>
+    <% } %>
+  </div>
+
+  <main class="main-content">

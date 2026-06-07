@@ -1,0 +1,32 @@
+  </main>
+
+  <footer class="footer">
+    <div class="footer-container">
+      <p><i class="fas fa-shopping-bag"></i> <strong>ShopEase</strong> &copy; <%= new Date().getFullYear() %> — Semester Project</p>
+    </div>
+  </footer>
+
+  <script>
+    // Auto-dismiss flash messages after 4 seconds
+    setTimeout(() => {
+      document.querySelectorAll('.flash').forEach(el => {
+        el.style.opacity = '0';
+        setTimeout(() => el.remove(), 300);
+      });
+    }, 4000);
+
+    // Dropdown toggle
+    const toggle = document.querySelector('.dropdown-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', () => {
+        toggle.nextElementSibling.classList.toggle('show');
+      });
+      document.addEventListener('click', (e) => {
+        if (!toggle.contains(e.target)) {
+          toggle.nextElementSibling.classList.remove('show');
+        }
+      });
+    }
+  </script>
+</body>
+</html>
